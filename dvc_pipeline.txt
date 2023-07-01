@@ -1,0 +1,75 @@
+
+## Commands 
+
+
+Virtual environment in VS code(using powershell)
+
+
+1. To create  enironment in powershell >> python -m venv <give projectfolder path>\environmentName
+
+OR 
+
+ python -m venv dvcdemoenv
+
+2. To activate :-     .\environment_Name\Scripts\activate
+
+		= .\dvcdemoenv\Scripts\activate
+
+3. select python env & enterpreter through ther VS CODE
+		Shift + ctrl + P
+
+4. pip install -r requirements.txt
+
+5. pip install dvc
+
+6. pip install dvclive>=2.0
+
+7. cd dvc folder (dvc is project folder)
+
+Done
+
+#----------------------------------------------------------------
+
+8. To initialize dvc repositories :- dvc init 
+
+
+9. To add remote local to store a data:
+
+		dvc remote add -d local ..\..\dvc_remote\
+		# we have added here remote local.Instead of that we can add CLoud remote storage
+
+
+10. NOW DVC Pipeline commands for this project are:
+
+    A. dvc stage add -n data_split -p data_source.local_path,base.random_state,split.split_ratio -d src/data_split.py -o data/split python src/data_split.py data/data.csv
+
+    B. dvc stage add -n data_processing -p split.dir,split.train_file,split.test_file,process.dir,process.train_file,process.test_file -d src/data_processing.py -d data/split -o data/processed python src/data_processing.py data/processed
+
+    C. dvc stage add -n train -p process.dir,process.train_file,process.test_file,base.random_state,base.target_col,train.n_est,model_dir -d src/train.py -d data/processed -o model/model.pkl python src/train.py data/features model/model.pkl
+
+    D.  stage add -n evaluate -d src/evaluate.py -d model/model.pkl -d data/processed -M eval/live/metrics.json -O eval/live/plots -O eval/prc -o eval/importance.png python src/evaluate.py model/model.pkl data/processed
+  
+
+
+11. commands To run all states:-    dvc repro
+
+12. commands To visualize Data pipeline :- dvc data_processing
+
+13. commands To visualize all metrics :- dvc metrics show
+
+14 commands to show plots:- dvc plots show
+	(For that we need to add something plotting in the dvc.yaml file)
+
+15. For dvc push:-  dvc push
+(Before this make sure that you have added remp)
+
+16. dvc remove data_split
+17. vc remove data_processing
+18. dvc remove train
+19. dvc remove evaluate
+
+20. dvc metrics show
+21. dvc plots show
+
+22. dvc metrics diff
+23. dvc plots diff
